@@ -1,0 +1,31 @@
+name: Connectedocr
+
+on:
+  push:
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/sahilchaudhry08/docker-ghr-test:main
+      credentials:
+         username: ${{ github.actor }}
+         password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      VAULT_ADDR: "https://vault-endpoint.customappsteam.co.uk"
+      HOME: '/tmp'
+      SONAR_USER_HOME: "${WORKSPACE}/.sonar"
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: dotnet version
+        run: dotnet --version
+        
+      - name: dotnet restore dependencies
+        run: dotnet restore
+        
+      - name: dotnet tool install
+        run: dotnet tool install -g Amazon.Lambda.Tools
